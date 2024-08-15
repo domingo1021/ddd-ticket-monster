@@ -1,5 +1,8 @@
-HELP.md
+.env
+*HELP.md
 target/
+/kafka-data
+
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
