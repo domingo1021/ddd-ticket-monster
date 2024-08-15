@@ -1,4 +1,4 @@
-# Ticket Monster (In Development)
+# Ticket Monster
 
 > This repository is a monolithic project for a ticket purchasing system built with Spring Boot and
 > the Spring Tech stack.
