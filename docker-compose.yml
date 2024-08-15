@@ -52,44 +52,6 @@ services:
       retries: 5
       start_period: 40s
 
-#  ticket-service:
-#    build: ./ticket-service
-#    container_name: ticket-service-1
-#    image: ticket-service
-#    restart: on-failure
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://ticket-db:5432/ticket_db
-#      SPRING_DATASOURCE_USERNAME: user
-#      SPRING_DATASOURCE_PASSWORD: password
-#      SPRING_APP_PORT: 8080
-#      KAFKA_BOOTSTRAP_SERVERS: ticket-kafka:9092
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      kafka:
-#        condition: service_started
-#    networks:
-#      - ticket-monster-network
-#
-#  ticket-service-2:
-#    build: ./ticket-service
-#    container_name: ticket-service-2
-#    image: ticket-service
-#    restart: always
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://ticket-db:5432/ticket_db
-#      SPRING_DATASOURCE_USERNAME: user
-#      SPRING_DATASOURCE_PASSWORD: password
-#      SPRING_APP_PORT: 8081
-#      KAFKA_BOOTSTRAP_SERVERS: ticket-kafka:9092
-#    ports:
-#      - "8081:8081"
-#    depends_on:
-#      kafka:
-#        condition: service_started
-#    networks:
-#      - ticket-monster-network
-
 networks:
   ticket-monster-network:
     driver: bridge
