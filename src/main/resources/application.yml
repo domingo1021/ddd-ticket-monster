@@ -48,3 +48,10 @@ spring:
 logging:
   level:
     org.flywaydb: DEBUG
+
+whitelist:
+  requestMatchers:
+    GET:
+      - /tickets/**
+    POST:
+      - /auth/**

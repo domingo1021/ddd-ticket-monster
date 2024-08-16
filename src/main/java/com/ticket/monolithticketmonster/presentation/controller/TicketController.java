@@ -25,8 +25,8 @@ public class TicketController {
 
   @GetMapping()
   public ResponseEntity<ApiResponse<List<Ticket>>> getTickets(
-//      @Validated
-//      @ValidEnum(enumClass = TicketStatus.class, message = "Invalid ticket status.")
+      @Validated
+      @ValidEnum(enumClass = TicketStatus.class, message = "Invalid ticket status.")
           @RequestParam(name = "status")
           TicketStatus ticketStatus) {
     logger.info("Getting all tickets with status {}", ticketStatus);

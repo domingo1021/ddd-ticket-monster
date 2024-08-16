@@ -43,7 +43,9 @@ public class JwtProvider {
 
   public void validateToken(String token) {
     var claims = getAllClaimsFromToken(token);
-    if (isTokenExpired(claims) || !isTokenIssuedByUs(claims)) throw new JwtAuthFailedException();
+    if (isTokenExpired(claims) || !isTokenIssuedByUs(claims)) {
+      throw new JwtAuthFailedException();
+    }
   }
 
   public String resolveToken(HttpServletRequest req) {
