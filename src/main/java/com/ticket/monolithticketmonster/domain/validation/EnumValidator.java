@@ -3,21 +3,31 @@ package com.ticket.monolithticketmonster.domain.validation;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class EnumValidator implements ConstraintValidator<ValidEnum, String> {
 
-  private Enum<?>[] enumValues;
+  private List<String> enums;
+  private String errorMessage;
 
   @Override
   public void initialize(ValidEnum constraintAnnotation) {
-    enumValues = constraintAnnotation.enumClass().getEnumConstants();
+    enums = Arrays.stream(constraintAnnotation.enumClass().getEnumConstants())
+        .map(Enum::name)
+        .collect(Collectors.toList());
+    errorMessage = constraintAnnotation.message();
   }
 
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
-    if (value == null) {
-      return true; // validate by @NotNull
+    if (value != null && enums.contains(value)) {
+      return true;
     }
-    return Arrays.stream(enumValues).anyMatch(enumValue -> enumValue.name().equals(value));
+
+    context.disableDefaultConstraintViolation();
+    context.buildConstraintViolationWithTemplate(errorMessage)
+        .addConstraintViolation();
+    return false;
   }
 }

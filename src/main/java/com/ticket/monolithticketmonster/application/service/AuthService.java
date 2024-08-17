@@ -1,5 +1,6 @@
 package com.ticket.monolithticketmonster.application.service;
 
+import com.ticket.monolithticketmonster.application.exception.AuthenticationException;
 import com.ticket.monolithticketmonster.application.exception.JwtAuthFailedException;
 import com.ticket.monolithticketmonster.application.exception.OAuthUserNoPwdException;
 import com.ticket.monolithticketmonster.application.exception.UserAlreadyExistException;
@@ -47,7 +48,8 @@ public class AuthService {
     User user =
         userRepository
             .findByEmail(email)
-            .orElseThrow(() -> new UserNotFoundException("Cannot find user with email " + email));
+            .orElseThrow(
+                () -> new AuthenticationException("Invalid email(" + email + ") or password"));
 
     if (user.getIsOAuth2User()) {
       throw new OAuthUserNoPwdException(
@@ -55,7 +57,7 @@ public class AuthService {
     }
 
     if (!passwordEncoder.matches(password, user.getPassword())) {
-      throw new JwtAuthFailedException();
+      throw new AuthenticationException("Invalid email(" + email + ") or password");
     }
 
     return jwtProvider.generateToken(user.getUserId());

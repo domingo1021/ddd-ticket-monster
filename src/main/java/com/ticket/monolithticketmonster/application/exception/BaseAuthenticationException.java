@@ -2,7 +2,7 @@ package com.ticket.monolithticketmonster.application.exception;
 
 import org.springframework.security.core.AuthenticationException;
 
-public abstract class BaseAuthenticationException extends AuthenticationException implements IErrorCodeProvider{
+public class BaseAuthenticationException extends AuthenticationException implements IErrorCodeProvider{
 
     private final int errorCode;
 
