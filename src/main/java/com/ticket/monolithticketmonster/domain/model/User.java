@@ -1,6 +1,7 @@
 package com.ticket.monolithticketmonster.domain.model;
 
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +22,9 @@ public class User extends AbstractAudit {
 
   @Column(columnDefinition = "Boolean default false")
   private Boolean isOAuth2User;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+  private List<Ticket> tickets;
 
   public User() {}
 

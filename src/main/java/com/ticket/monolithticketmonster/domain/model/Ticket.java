@@ -3,12 +3,19 @@ package com.ticket.monolithticketmonster.domain.model;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "tickets")
 public class Ticket {
 
   @Id
@@ -23,5 +30,7 @@ public class Ticket {
   @Enumerated(EnumType.STRING)
   private TicketStatus status;
 
-  public Ticket() {}
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  private User user;
 }

@@ -18,10 +18,13 @@ public class TicketService {
   private static final Logger logger = LoggerFactory.getLogger(TicketService.class);
   private static final String TICKET_STATUS_TOPIC = "ticket-status-topic";
   private final TicketRepository ticketRepository;
+  private final UserService userService;
   private final KafkaProducerService producer;
 
-  public TicketService(TicketRepository ticketRepository, KafkaProducerService producer) {
+  public TicketService(
+      TicketRepository ticketRepository, UserService userService, KafkaProducerService producer) {
     this.ticketRepository = ticketRepository;
+    this.userService = userService;
     this.producer = producer;
   }
 
@@ -30,7 +33,7 @@ public class TicketService {
   }
 
   @Transactional
-  public void purchaseTicket(Long ticketId) {
+  public void purchaseTicket(Long ticketId, Long userId) {
     try {
       ticketRepository
           .findByIdAndLock(ticketId, TicketStatus.AVAILABLE)
@@ -48,7 +51,7 @@ public class TicketService {
       throw new RuntimeException("Failed to purchase ticket due to an unexpected error", e);
     }
 
-    sendTicketStatusSold(ticketId);
+    sendTicketStatusSold(ticketId, userId);
   }
 
   private Ticket markTicketStatusPending(Ticket ticket) {
@@ -57,28 +60,49 @@ public class TicketService {
   }
 
   @Async
-  public void sendTicketStatusSold(Long ticketId) {
+  public void sendTicketStatusSold(Long ticketId, Long userId) {
     String message =
-        new TicketStatusUpdate(ticketId, TicketStatus.PENDING, TicketStatus.SOLD).toJson();
+        TicketStatusUpdate.builder()
+            .ticketId(ticketId)
+            .userId(userId)
+            .fromStatus(TicketStatus.PENDING)
+            .toStatus(TicketStatus.SOLD)
+            .build()
+            .toJson();
     try {
       producer.sendMessage(TICKET_STATUS_TOPIC, message);
-      this.updateTicketStatus(ticketId, TicketStatus.SOLD);
+      this.setTicketPurchasedByUser(ticketId, userId);
     } catch (Exception e) {
       logger.error(
           "Failed to send Kafka message for ticket ID {}. Rolling back ticket status to AVAILABLE.",
           ticketId);
-      this.updateTicketStatus(ticketId, TicketStatus.AVAILABLE);
+      this.setTicketAvailable(ticketId);
     }
   }
 
-  private void updateTicketStatus(Long ticketId, TicketStatus toStatus) {
+  private void setTicketPurchasedByUser(Long ticketId, Long userId) {
+    var buyer = userService.getRawUserById(userId);
     ticketRepository
         .findById(ticketId)
         .ifPresent(
             ticket -> {
-              ticket.setStatus(toStatus);
+              ticket.setStatus(TicketStatus.SOLD);
+              ticket.setUser(buyer);
               ticketRepository.save(ticket);
-              logger.info("Ticket ID {} status updated to {}", ticketId, toStatus);
+              logger.info("Ticket ID {} status updated to {}", ticketId, TicketStatus.SOLD);
+            });
+    logger.info("Ticket ID {} purchased by user ID {}", ticketId, userId);
+  }
+
+  private void setTicketAvailable(Long ticketId) {
+    ticketRepository
+        .findById(ticketId)
+        .ifPresent(
+            ticket -> {
+              ticket.setStatus(TicketStatus.AVAILABLE);
+              ticketRepository.save(ticket);
+              logger.info("Ticket ID {} status updated to {}", ticketId, TicketStatus.AVAILABLE);
             });
   }
 }
+

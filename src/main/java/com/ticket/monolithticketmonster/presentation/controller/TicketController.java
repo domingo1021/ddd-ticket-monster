@@ -5,6 +5,7 @@ import com.ticket.monolithticketmonster.domain.model.Ticket;
 import com.ticket.monolithticketmonster.domain.model.TicketStatus;
 import com.ticket.monolithticketmonster.domain.validation.ValidEnum;
 import com.ticket.monolithticketmonster.presentation.dto.ApiResponse;
+import com.ticket.monolithticketmonster.presentation.dto.UserDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -12,6 +13,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -42,9 +44,11 @@ public class TicketController {
       @Valid
           @Min(value = 1, message = "Should be integer greater than 1")
           @Max(value = Long.MAX_VALUE, message = "Invalid ticket id number")
-          @PathVariable Long ticketId) {
+          @PathVariable
+          Long ticketId,
+      @AuthenticationPrincipal UserDTO user) {
     logger.info("Buying ticket with id: {}", ticketId);
-    ticketService.purchaseTicket(ticketId);
+    ticketService.purchaseTicket(ticketId, user.getUserId());
     return ResponseEntity.ok(ApiResponse.success());
   }
 }

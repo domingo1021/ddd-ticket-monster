@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+public class  UserService {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
@@ -25,6 +25,12 @@ public class UserService {
     return userRepository
         .findById(id)
         .map(UserMapper::convertUserEntityToDTO)
+        .orElseThrow(() -> new UserNotFoundException("User not found"));
+  }
+
+  public User getRawUserById(Long id) {
+    return userRepository
+        .findById(id)
         .orElseThrow(() -> new UserNotFoundException("User not found"));
   }
 

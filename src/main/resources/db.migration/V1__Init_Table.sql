@@ -1,14 +1,4 @@
 -- V1__Create_Ticket_Table.sql
--- Create the Ticket table
-CREATE TABLE IF NOT EXISTS ticket
-(
-    id      SERIAL PRIMARY KEY,
-    concert VARCHAR(255)   NOT NULL,
-    date    DATE           NOT NULL,
-    venue   VARCHAR(255)   NOT NULL,
-    price   NUMERIC(10, 2) NOT NULL,
-    status  VARCHAR(50)    NOT NULL
-);
 
 create table if not exists public.users
 (
@@ -21,6 +11,18 @@ create table if not exists public.users
     username     varchar(255)
 );
 
+
+-- Create the Ticket table
+CREATE TABLE IF NOT EXISTS public.tickets
+(
+    id      SERIAL PRIMARY KEY,
+    concert VARCHAR(255)   NOT NULL,
+    date    DATE           NOT NULL,
+    venue   VARCHAR(255)   NOT NULL,
+    price   NUMERIC(10, 2) NOT NULL,
+    status  VARCHAR(50)    NOT NULL,
+    user_id BIGINT REFERENCES users (user_id)
+);
 -- Insert some initial data
 INSERT INTO ticket (concert, date, venue, price, status)
 VALUES ('Concert A', '2024-09-01', 'Venue A', 50.00, 'AVAILABLE'),
