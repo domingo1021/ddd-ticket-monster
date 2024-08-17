@@ -2,11 +2,13 @@ package com.ticket.monolithticketmonster.presentation.controller;
 
 import com.ticket.monolithticketmonster.application.service.AuthService;
 import com.ticket.monolithticketmonster.presentation.dto.ApiResponse;
-import com.ticket.monolithticketmonster.presentation.dto.AuthRequestDTO;
 import com.ticket.monolithticketmonster.presentation.dto.AuthResponseDTO;
 import com.ticket.monolithticketmonster.presentation.dto.UserDTO;
+import com.ticket.monolithticketmonster.presentation.dto.request.SignInRequestDTO;
+import com.ticket.monolithticketmonster.presentation.dto.request.SignUpRequestDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,14 +22,14 @@ public class AuthController {
   }
 
   @PostMapping("/signup")
-  public ResponseEntity<?> signup(@RequestBody AuthRequestDTO request) {
-    var user = authService.signup(request.email(), request.password(), request.username());
+  public ResponseEntity<?> signup(@Validated @RequestBody SignUpRequestDTO dto) {
+    var user = authService.signup(dto.email(), dto.password(), dto.username());
     return ResponseEntity.ok(ApiResponse.success(user));
   }
 
   @PostMapping("/signin")
-  public ResponseEntity<?> signin(@RequestBody AuthRequestDTO request) {
-    var token = authService.signin(request.email(), request.password());
+  public ResponseEntity<?> signin(@Validated @RequestBody SignInRequestDTO dto) {
+    var token = authService.signin(dto.email(), dto.password());
     return ResponseEntity.ok(ApiResponse.success(new AuthResponseDTO(token)));
   }
 

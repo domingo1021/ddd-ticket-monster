@@ -1,7 +1,9 @@
 package com.ticket.monolithticketmonster.application.exception;
 
+import lombok.Getter;
 import org.springframework.security.core.AuthenticationException;
 
+@Getter
 public class BaseAuthenticationException extends AuthenticationException implements IErrorCodeProvider{
 
     private final int errorCode;
@@ -15,7 +17,4 @@ public class BaseAuthenticationException extends AuthenticationException impleme
       this(message, ConstantExceptionCode.GENERAL_AUTH_FAILED);
     }
 
-    public int getErrorCode() {
-      return errorCode;
-    }
 }

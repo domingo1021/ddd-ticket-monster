@@ -1,5 +1,6 @@
 package com.ticket.monolithticketmonster.presentation.handler;
 
+import com.ticket.monolithticketmonster.application.exception.BaseAuthenticationException;
 import com.ticket.monolithticketmonster.application.exception.ConstantExceptionCode;
 import com.ticket.monolithticketmonster.application.exception.JwtAuthFailedException;
 import com.ticket.monolithticketmonster.application.exception.OAuthUserNoPwdException;
@@ -48,7 +49,7 @@ public class GlobalExceptionHandler {
     UserAlreadyExistException.class
   })
   @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
-  public ApiResponse<?> jwtAuthFailedException(JwtAuthFailedException ex, WebRequest _request) {
+  public ApiResponse<?> jwtAuthFailedException(BaseAuthenticationException ex, WebRequest _request) {
     logException(HttpStatus.UNAUTHORIZED, ex);
     return ApiResponse.error(ex.getErrorCode(), ex.getMessage());
   }
@@ -98,10 +99,9 @@ public class GlobalExceptionHandler {
               String errorMessage = error.getDefaultMessage();
               errors.put(fieldName, errorMessage);
             });
-    logger.error("MethodArgumentNotValidException: {}", errors.toString());
+    logger.error("MethodArgumentNotValidException: {}", errors);
 
-    final String message = "Invalid request input";
-    return ApiResponse.error(ConstantExceptionCode.GENERAL_BAD_REQUEST, message);
+    return ApiResponse.error(ConstantExceptionCode.GENERAL_BAD_REQUEST, errors.toString());
   }
 
   @ExceptionHandler(MissingServletRequestParameterException.class)
