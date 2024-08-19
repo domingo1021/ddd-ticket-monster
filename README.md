@@ -1,7 +1,7 @@
 # Ticket Monster
 
-> This repository is a monolithic project for a ticket purchasing system built with Spring Boot and
-> the Spring Tech stack.
+> A ticket purchase system with Spring Modulith based on Domain-Driven Design (DDD) principles.
+
 
 ## Features
 
