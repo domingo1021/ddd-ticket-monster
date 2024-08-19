@@ -3,6 +3,36 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <artifactId>ticket-service</artifactId>
+  <repositories>
+    <repository>
+      <id>spring-snapshots</id>
+      <url>https://repo.spring.io/snapshot</url>
+    </repository>
+  </repositories>
+  <properties>
+    <bytebuddy.version>1.14.18</bytebuddy.version>
+    <java.version>21</java.version>
+    <jmolecules.version>2023.1.4</jmolecules.version>
+    <spring-modulith.version>1.2.2</spring-modulith.version>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.modulith</groupId>
+        <artifactId>spring-modulith-bom</artifactId>
+        <version>${spring-modulith.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jmolecules</groupId>
+        <artifactId>jmolecules-bom</artifactId>
+        <version>${jmolecules.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <build>
     <plugins>
       <plugin>
@@ -130,13 +160,44 @@
       <artifactId>spring-boot-starter-validation</artifactId>
       <groupId>org.springframework.boot</groupId>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.modulith</groupId>
+      <artifactId>spring-modulith-bom</artifactId>
+      <version>1.2.2</version>
+      <scope>import</scope>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.modulith</groupId>
+      <artifactId>spring-modulith-events-api</artifactId>
+      <version>1.2.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jmolecules.integrations</groupId>
+      <artifactId>jmolecules-starter-ddd</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jmolecules</groupId>
+      <artifactId>jmolecules-events</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jmolecules.integrations</groupId>
+      <artifactId>jmolecules-jpa</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jmolecules.integrations</groupId>
+      <artifactId>jmolecules-bytebuddy-nodep</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
   </dependencies>
   <description>ticket-service</description>
   <developers>
     <developer/>
   </developers>
-  <groupId>cart.ticket</groupId>
+  <groupId>com.ticket</groupId>
   <licenses>
     <license/>
   </licenses>
@@ -148,9 +209,6 @@
     <relativePath/>
     <version>3.3.2</version> <!-- lookup parent from repository -->
   </parent>
-  <properties>
-    <java.version>21</java.version>
-  </properties>
   <scm>
     <connection/>
     <developerConnection/>
