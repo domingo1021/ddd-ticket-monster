@@ -25,9 +25,9 @@ public class AuthUseCase {
   public UserDTO signup(Email email, Password password, String username) {
     Optional<User> existingUser = userRepository.findByEmail(email);
     if (existingUser.isPresent() && existingUser.get().getIsOAuth2User()) {
-      throw new OAuthUserNoPwdException("User with email " + email + " is an OAuth2 user");
+      throw new OAuthUserNoPwdException("User with email " + email.getValue() + " is an OAuth2 user");
     } else if (existingUser.isPresent()) {
-      throw new UserAlreadyExistException("User with email " + email + " already exists");
+      throw new UserAlreadyExistException("User with email " + email.getValue() + " already exists");
     }
 
     var user = new User(email, password, username, false, passwordEncoder);

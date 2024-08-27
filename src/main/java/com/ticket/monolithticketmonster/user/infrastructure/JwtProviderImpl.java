@@ -4,7 +4,11 @@ import com.ticket.monolithticketmonster.user.application.exception.JwtAuthFailed
 import com.ticket.monolithticketmonster.user.application.IJwtProvider;
 import com.ticket.monolithticketmonster.user.domain.UserId;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.IncorrectClaimException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MissingClaimException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,11 +48,13 @@ public class JwtProviderImpl implements IJwtProvider {
         .compact();
   }
 
-  public void validateToken(String token) {
-    var claims = getAllClaimsFromToken(token);
-    if (isTokenExpired(claims) || !isTokenIssuedByUs(claims)) {
-      throw new JwtAuthFailedException();
-    }
+  public Claims validateToken(String token) throws MissingClaimException, IncorrectClaimException, ExpiredJwtException, UnsupportedJwtException {
+      return Jwts.parser()
+        .requireIssuer(this.ISSUER)
+        .verifyWith(this.signingKey)
+        .build()
+        .parseSignedClaims(token)
+        .getPayload();
   }
 
   public String resolveToken(HttpServletRequest req) {
@@ -59,24 +65,7 @@ public class JwtProviderImpl implements IJwtProvider {
     return null;
   }
 
-  public UserId getUserIdFromToken(String token) {
-    return new UserId(UUID.fromString(getClaimFromToken(token, Claims::getSubject)));
-  }
-
-  private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-    final Claims claims = getAllClaimsFromToken(token);
-    return claimsResolver.apply(claims);
-  }
-
-  private Claims getAllClaimsFromToken(String token) {
-    return Jwts.parser().verifyWith(this.signingKey).build().parseSignedClaims(token).getPayload();
-  }
-
-  private Boolean isTokenExpired(Claims claims) {
-    return claims.getExpiration().before(new Date());
-  }
-
-  private Boolean isTokenIssuedByUs(Claims claims) {
-    return this.ISSUER.equals(claims.getIssuer());
+  public UserId getUserId(Claims claims) {
+    return new UserId(UUID.fromString(claims.getSubject()));
   }
 }

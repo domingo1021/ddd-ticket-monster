@@ -21,7 +21,6 @@ public class AuthController {
 
   @PostMapping("/signup")
   public ResponseEntity<?> signup(@Validated @RequestBody SignUpRequestDTO dto) {
-    System.out.println("To String: " + dto.toString());
     var user = authUseCase.signup(dto.email(), dto.password(), dto.username());
     return ResponseEntity.ok(ApiResponse.success(user));
   }

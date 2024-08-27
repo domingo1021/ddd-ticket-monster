@@ -52,14 +52,6 @@ public class GlobalExceptionHandler {
     return ApiResponse.error(ex.getErrorCode(), ex.getMessage());
   }
 
-//  @ExceptionHandler(TicketUnavailableException.class)
-//  @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-//  public ApiResponse<?> ticketUnavailableException(
-//      TicketUnavailableException ex, WebRequest _request) {
-//    logException(HttpStatus.BAD_REQUEST, ex);
-//    return ApiResponse.error(ConstantExceptionCode.TICKET_UNAVAILABLE, ex.getMessage());
-//  }
-
   @ExceptionHandler(ConstraintViolationException.class)
   @ResponseStatus(code = HttpStatus.BAD_REQUEST)
   public ApiResponse<?> constraintViolationException(
@@ -148,6 +140,13 @@ public class GlobalExceptionHandler {
     logException(HttpStatus.NOT_FOUND, ex);
     String msg = "Resource not found";
     return ApiResponse.error(ConstantExceptionCode.NOT_FOUND, msg);
+  }
+
+  @ExceptionHandler(BaseAuthenticationException.class)
+  @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
+  public ApiResponse<?> baseAuthenticationException(BaseAuthenticationException ex, WebRequest _request) {
+    logException(HttpStatus.UNAUTHORIZED, ex);
+    return ApiResponse.error(ex.getErrorCode(), ex.getMessage());
   }
 
   @ExceptionHandler(AuthenticationException.class)
