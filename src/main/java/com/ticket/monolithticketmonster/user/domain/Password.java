@@ -27,7 +27,6 @@ public class Password {
   }
 
   private boolean isValid(String pwd) {
-    System.out.println("Password: " + pwd);
     return PASSWORD_PATTERN.matcher(pwd).matches();
   }
 }

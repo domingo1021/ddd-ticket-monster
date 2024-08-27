@@ -15,7 +15,6 @@ public class Email {
   private static final EmailValidator emailValidator = new EmailValidator();
 
   public Email(String value) {
-    System.out.println("Email: " + value);
     if (!emailValidator.isValid(value, null)) {
       throw new IllegalArgumentException("invalid email: " + value);
     }
@@ -23,7 +22,6 @@ public class Email {
   }
 
   public void setValue(String value) {
-    System.out.println("Email: " + value);
     if (!emailValidator.isValid(value, null)) {
       throw new IllegalArgumentException("invalid email: " + value);
     }
