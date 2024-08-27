@@ -1,0 +1,21 @@
+# Use Maven with JDK for development
+FROM eclipse-temurin:21.0.2_13-jdk-jammy
+
+WORKDIR /opt/app
+ENV SPRING_PROFILES_ACTIVE=development
+
+# Copy Maven wrapper and configuration
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+
+# Download dependencies
+RUN ./mvnw dependency:go-offline
+
+# Copy the entire project source
+COPY ./src ./src
+
+# Expose the application port
+EXPOSE 8080
+
+# Command to run the application with Maven Spring Boot plugin
+CMD ["./mvnw", "spring-boot:run"]

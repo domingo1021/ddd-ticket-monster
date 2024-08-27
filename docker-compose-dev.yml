@@ -38,7 +38,7 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://ticket-kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
       - "9092:9092"
@@ -47,39 +47,18 @@ services:
     networks:
       - ticket-monster-network
     healthcheck:
-      test: [ "CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092 | grep -q 'id:1'" ]
+      test: [ "CMD-SHELL", "kafka-broker-api-versions --bootstrap-server ticket-kafka:9092 | grep -q 'id:1'" ]
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 40s
 
-#  ticket-service:
-#    build: .
-#    container_name: ticket-service-1
-#    image: ticket-service
-#    restart: on-failure
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://ticket-db:5432/ticket_db
-#      SPRING_DATASOURCE_USERNAME: user
-#      SPRING_DATASOURCE_PASSWORD: password
-#      SPRING_APP_PORT: 8080
-#      KAFKA_BOOTSTRAP_SERVERS: ticket-kafka:9092
-#      ACTIVE_PROFILES_PROPERTY_NAME: production
-#      SPRING_PROFILES_ACTIVE: production
-#    env_file:
-#      - .env
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      kafka:
-#        condition: service_started
-#    networks:
-#      - ticket-monster-network
   ticket-service:
-    build: .
+    build:
+      dockerfile: Dockerfile-dev
     container_name: ticket-service-1
-    image: ticket-service
-    restart: on-failure
+    image: ticket-service-dev
+    restart: always
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://ticket-db:5432/ticket_db
       SPRING_DATASOURCE_USERNAME: user
@@ -93,8 +72,8 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ~/.m2:/root/.m2  # Mount the local Maven repository
-      - ./src:/opt/app/src
+      - .:/opt/app
+      - ~/.m2:/root/.m2
       - ./target:/opt/app/target
     depends_on:
       kafka:
