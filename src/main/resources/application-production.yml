@@ -6,8 +6,13 @@ jwt:
   expiration: 86400000
 
 spring:
+  devtools:
+    livereload:
+      enabled: true
+
   mvc:
     static-path-pattern: /**
+
   application:
     name: ticket-monster
 

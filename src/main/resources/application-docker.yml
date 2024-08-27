@@ -6,8 +6,13 @@ jwt:
   expiration: 86400000
 
 spring:
+  devtools:
+    livereload:
+      enabled: true
+
   mvc:
     static-path-pattern: /**
+
   application:
     name: ticket-monster
 
@@ -25,12 +30,12 @@ spring:
             authorization-uri: https://accounts.google.com/o/oauth2/auth
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ticket-kafka:9092
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/ticket_db
-    username: user
-    password: password
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
