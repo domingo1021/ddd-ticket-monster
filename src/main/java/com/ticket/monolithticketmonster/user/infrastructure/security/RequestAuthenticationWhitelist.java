@@ -22,7 +22,6 @@ public class RequestAuthenticationWhitelist {
 
   @PostConstruct
   public void init() {
-    System.out.println(this.requestMatchers);
     if (requestMatchers == null) {
       throw new IllegalStateException("Endpoints map is not initialized. Check your configuration.");
     }

@@ -23,7 +23,6 @@ public class TicketPurchaseUseCase {
   @Transactional
   public Ticket purchaseTicket(ConcertId concertId, UserId userId) {
     Long ticketCapacity = concertUseCase.getConcertTicketCapacity(concertId);
-    System.out.println("Ticket capacity at t0: " + ticketCapacity);
     if (ticketCapacity <= 0) {
       throw new ConcertTicketNoStockException("No tickets available for concert");
     }

@@ -24,7 +24,6 @@ public class DomainEventListener {
   public void handle(TicketReserved event) {
     Long concertTicketCapacity =
         concertRepository.findTicketCapacityById(event.concertId()).orElse(null);
-    System.out.println("get concert capacity: " + concertTicketCapacity);
     if (concertTicketCapacity == null) return;
 
     concertEventProducer.sendMessage(
