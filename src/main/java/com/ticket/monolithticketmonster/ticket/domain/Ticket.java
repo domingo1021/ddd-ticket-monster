@@ -47,6 +47,8 @@ public class Ticket extends AbstractAggregateRoot<Ticket> {
     this.concertId = concertId;
     this.userId = userId;
     this.status = new TicketStatus(TicketStatus.RESERVED);
+    this.createdAt = LocalDateTime.now();
+    this.updatedAt = LocalDateTime.now();
     registerEvent(new TicketReserved(userId, concertId));
   }
 }
