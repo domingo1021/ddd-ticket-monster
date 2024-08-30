@@ -59,7 +59,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
    * Parse the message type from the payload.
    *
    * @param payload the message payload, example: {"action": "subscription", "data": { "type":
-   *     "ticket-status" }}
+   *     "ticket-capacity-update" }}
    * @return the message type
    */
   private String parseSubscriptionType(String payload) {
